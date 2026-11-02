@@ -1,0 +1,224 @@
+﻿@page
+@model razor_pages_app.Pages.News.IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Новини</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .add-news {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .news {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+
+        .news-title {
+            margin-bottom: 5px;
+        }
+
+        .date {
+            color: gray;
+            font-size: 14px;
+        }
+
+        .comment {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .comments {
+            margin-top: 25px;
+        }
+
+        .comment-form {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Новини</h1>
+
+    <!-- Форма додавання новини -->
+
+    <div class="add-news">
+
+        <h2>Додати новину</h2>
+
+        <form method="post" asp-page-handler="AddNews">
+
+            <label>Заголовок</label>
+
+            <input type="text"
+                   asp-for="NewsTitle"
+                   placeholder="Введіть заголовок новини" />
+
+            <label>Текст новини</label>
+
+            <textarea asp-for="NewsText"
+                      placeholder="Введіть текст новини"></textarea>
+
+            <button type="submit">
+                Додати новину
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- Список новин -->
+
+    @foreach (var news in Model.My_News)
+    {
+        <div class="news">
+
+            <h2 class="news-title">
+                @news.Title
+            </h2>
+
+            <div class="date">
+                @news.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+            </div>
+
+            <p>
+                @news.Text
+            </p>
+
+
+            <!-- Коментарі -->
+
+            <div class="comments">
+
+                <h3>
+                    Коментарі
+                </h3>
+
+                @if (news.Comments.Count == 0)
+                {
+                    <p>
+                        Коментарів поки немає.
+                    </p>
+                }
+                else
+                {
+                    @foreach (var comment in news.Comments)
+                    {
+                        <div class="comment">
+
+                            <div class="comment-author">
+                                @comment.Author
+                            </div>
+
+                            <div class="date">
+                                @comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                            </div>
+
+                            <p>
+                                @comment.Text
+                            </p>
+
+                        </div>
+                    }
+                }
+
+
+                <!-- Форма додавання коментаря -->
+
+                <div class="comment-form">
+
+                    <h4>
+                        Додати коментар
+                    </h4>
+
+                    <form method="post"
+                          asp-page-handler="AddComment">
+<input type="hidden"
+                               name="NewsId"
+                               value="@news.Id" />
+
+                        <label>Ваше ім'я</label>
+
+                        <input type="text"
+                               name="CommentAuthor"
+                               placeholder="Введіть ім'я" />
+
+                        <label>Коментар</label>
+
+                        <textarea name="CommentText"
+                                  placeholder="Введіть коментар"></textarea>
+
+                        <button type="submit">
+                            Додати коментар
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>
+
+</body>
+</html>
